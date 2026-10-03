@@ -2,6 +2,8 @@
 
 **Turn local conversations into customers.**
 
+Live dashboard: **https://localy-ochre.vercel.app** (approved Localy sign-in required).
+
 Localy discovers customer demand a local business does not know exists yet. It identifies high-intent requests in participating communities, extracts the customer's needs, matches them to available services, and helps turn the conversation into a confirmed booking.
 
 Built for the **Dell × NVIDIA AI Hackathon**. The demo business is **Cambridge Pet Groomers** in Cambridge, Massachusetts. Localy is a platform for local businesses; pet grooming is the demo vertical.

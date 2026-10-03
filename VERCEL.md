@@ -1,5 +1,9 @@
 # Localy on Vercel
 
+Live site: **https://localy-ochre.vercel.app**  
+Vercel project: **https://vercel.com/localy3/localy**  
+GitHub `main` is connected and deploys automatically.
+
 Use a **Hobby** account for the personal hackathon demo and the included `vercel.app` address. This setup creates no paid service or custom domain. Hobby is intended for personal, non-commercial projects.
 
 ## Project settings
@@ -27,10 +31,10 @@ Redeploy after changing a `NEXT_PUBLIC_` value because Next.js embeds those valu
 
 ## Supabase login redirects
 
-After Vercel gives you the stable production URL, open the Supabase project's **Authentication → URL Configuration**:
+Open the Supabase project's **Authentication → URL Configuration**:
 
-1. Set **Site URL** to the exact `https://…vercel.app` production URL.
-2. Add that production URL to **Redirect URLs**.
+1. Set **Site URL** to `https://localy-ochre.vercel.app`.
+2. Add `https://localy-ochre.vercel.app` to **Redirect URLs**.
 3. Keep `http://localhost:3000` in Redirect URLs so local development still works.
 4. Add an exact preview URL only when you want to test signup email links on that preview.
 
