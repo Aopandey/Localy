@@ -22,14 +22,19 @@ import {
 } from "@/components/ui/primitives";
 import { percent } from "@/lib/utils";
 import type { AgentLead, AgentTask } from "@/lib/types/agent";
+import { isSupabaseMode } from "@/services/api";
+import { getSupabase } from "@/lib/supabase/client";
 
 type Mode = "watch_url" | "search";
 const SEARCH_PRESETS = [
   '"dog groomer" Cambridge MA site:reddit.com',
   '"looking for" dog groomer Somerville OR Cambridge',
-  'recommend groomer golden retriever Boston',
+  "recommend groomer golden retriever Boston",
 ];
-const taskTone: Record<AgentTask["status"], "green" | "amber" | "neutral" | "blue"> = {
+const taskTone: Record<
+  AgentTask["status"],
+  "green" | "amber" | "neutral" | "blue"
+> = {
   queued: "neutral",
   running: "blue",
   done: "green",
@@ -37,9 +42,18 @@ const taskTone: Record<AgentTask["status"], "green" | "amber" | "neutral" | "blu
 };
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = new Headers(init?.headers);
+  headers.set("Content-Type", "application/json");
+  if (isSupabaseMode) {
+    const { data, error } = await getSupabase().auth.getSession();
+    if (error || !data.session)
+      throw new Error("Sign in to access this Localy workspace.");
+    headers.set("Authorization", `Bearer ${data.session.access_token}`);
+  }
   const res = await fetch(path, {
     ...init,
-    headers: { "Content-Type": "application/json" },
+    headers,
+    cache: "no-store",
   });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(body.error ?? `Request failed (${res.status}).`);
@@ -51,7 +65,11 @@ const fetchAgent = () => call<AgentSnapshot>("/api/agent");
 
 function since(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
-  return mins < 1 ? "Just now" : mins < 60 ? `${mins} min ago` : `${Math.round(mins / 60)} h ago`;
+  return mins < 1
+    ? "Just now"
+    : mins < 60
+      ? `${mins} min ago`
+      : `${Math.round(mins / 60)} h ago`;
 }
 
 export function AgentConsole() {
@@ -68,7 +86,9 @@ export function AgentConsole() {
     setLeads(res.leads);
   }, []);
   const load = useCallback(async () => apply(await fetchAgent()), [apply]);
-  const working = tasks.some((t) => t.status === "running" || t.status === "queued");
+  const working = tasks.some(
+    (t) => t.status === "running" || t.status === "queued",
+  );
 
   useEffect(() => {
     let active = true;
@@ -97,7 +117,18 @@ export function AgentConsole() {
     }
   }
 
-  if (!data || !leads) return <LoadingState />;
+  if (!data) return <LoadingState />;
+  if (!leads)
+    return error ? (
+      <EmptyState
+        title="Could not load the agent"
+        action={<Button onClick={() => void run(load)}>Retry</Button>}
+      >
+        {error}
+      </EmptyState>
+    ) : (
+      <LoadingState />
+    );
   const startTask = () =>
     run(async () => {
       await call("/api/agent/tasks", {
@@ -124,7 +155,11 @@ export function AgentConsole() {
           </Badge>
         }
       />
-      {error && <div className="error-banner" role="alert">{error}</div>}
+      {error && (
+        <div className="error-banner" role="alert">
+          {error}
+        </div>
+      )}
 
       <div className="community-columns">
         <section className="agent-main">
@@ -163,7 +198,9 @@ export function AgentConsole() {
                       ? "e.g. dog groomer recommendations Cambridge"
                       : "https://www.reddit.com/r/CambridgeMA/new/ or a Facebook group link"
                   }
-                  aria-label={mode === "search" ? "Search query" : "Page link to watch"}
+                  aria-label={
+                    mode === "search" ? "Search query" : "Page link to watch"
+                  }
                 />
               </label>
               <Button type="submit" disabled={busy || working || !input.trim()}>
@@ -182,21 +219,29 @@ export function AgentConsole() {
             )}
             <div className="response-disclosure">
               <ShieldCheck size={14} />
-              Read-only. The agent never posts or messages anyone until you approve a reply.
+              Read-only. The agent never posts or messages anyone until you
+              approve a reply.
             </div>
           </div>
 
           <h2 className="agent-section-title">
-            Leads found <span>{leads.filter((l) => l.status !== "ignored").length}</span>
+            Leads found{" "}
+            <span>{leads.filter((l) => l.status !== "ignored").length}</span>
           </h2>
           {leads.length === 0 ? (
             <EmptyState title="No leads yet">
-              Run a search or watch a page. Leads appear here with a drafted reply.
+              Run a search or watch a page. Leads appear here with a drafted
+              reply.
             </EmptyState>
           ) : (
             <div className="feed-list">
               {leads.map((lead) => (
-                <LeadCard key={lead.id} lead={lead} disabled={busy || working} run={run} />
+                <LeadCard
+                  key={lead.id}
+                  lead={lead}
+                  disabled={busy || working}
+                  run={run}
+                />
               ))}
             </div>
           )}
@@ -219,7 +264,11 @@ export function AgentConsole() {
                       <small>{since(t.createdAt)}</small>
                     </div>
                     <strong>
-                      {t.kind === "send" ? "Send reply" : t.kind === "search" ? t.query : t.target}
+                      {t.kind === "send"
+                        ? "Send reply"
+                        : t.kind === "search"
+                          ? t.query
+                          : t.target}
                     </strong>
                     {t.summary && <p>{t.summary}</p>}
                   </li>
@@ -231,9 +280,9 @@ export function AgentConsole() {
             <ShieldCheck size={20} />
             <h3>How replies go out</h3>
             <p>
-              Public reply on the person&apos;s post by default. A direct message only
-              when their post asks for DMs. Each reply is sent once, exactly as you
-              approved it, from your own logged-in account.
+              Public reply on the person&apos;s post by default. A direct
+              message only when their post asks for DMs. Each reply is sent
+              once, exactly as you approved it, from your own logged-in account.
             </p>
           </div>
         </aside>
@@ -262,9 +311,13 @@ function LeadCard({
   ].filter(([, v]) => v);
 
   return (
-    <article className={`card feed-post ${lead.status === "ignored" ? "agent-lead-muted" : "feed-post-high"}`}>
+    <article
+      className={`card feed-post ${lead.status === "ignored" ? "agent-lead-muted" : "feed-post-high"}`}
+    >
       <div className="feed-post-header">
-        <span className="post-avatar">{(lead.author || "?").replace(/^u\//i, "").slice(0, 2).toUpperCase()}</span>
+        <span className="post-avatar">
+          {(lead.author || "?").replace(/^u\//i, "").slice(0, 2).toUpperCase()}
+        </span>
         <div>
           <strong>{lead.author || "Unknown"}</strong>
           <div className="feed-source">
@@ -272,7 +325,12 @@ function LeadCard({
             {lead.postedAt && <span>· {lead.postedAt}</span>}
           </div>
         </div>
-        <a className="text-link" href={lead.url} target="_blank" rel="noreferrer">
+        <a
+          className="text-link"
+          href={lead.url}
+          target="_blank"
+          rel="noreferrer"
+        >
           Open post <ExternalLink size={14} />
         </a>
       </div>
@@ -378,11 +436,17 @@ function LeadCard({
         )}
         {lead.status === "sent" && (
           <Badge tone="green">
-            <CircleCheck size={12} /> Sent {lead.sentAt ? since(lead.sentAt) : ""}
+            <CircleCheck size={12} /> Sent{" "}
+            {lead.sentAt ? since(lead.sentAt) : ""}
           </Badge>
         )}
         {lead.status === "sent" && lead.replyUrl && (
-          <a className="text-link" href={lead.replyUrl} target="_blank" rel="noreferrer">
+          <a
+            className="text-link"
+            href={lead.replyUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
             View reply <ExternalLink size={14} />
           </a>
         )}

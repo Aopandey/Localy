@@ -1,6 +1,6 @@
 # Connect Localy's private feeds to Supabase
 
-This phase connects **community posts and opportunities**. Business settings, conversations, bookings, and activity remain sample/browser data. Live outreach is disabled until the agent actions are connected.
+This phase connects **community posts and opportunities**. Business settings, conversations, bookings, and activity remain sample/browser data. Outreach on Supabase opportunities is disabled until those feed records are connected to agent actions. The team's separate Agent page retains its local OpenClaw/Aside store and is also protected by workspace sign-in.
 
 ## 1. Create the project
 

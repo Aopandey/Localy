@@ -238,3 +238,39 @@ test("the private sign-in form fits mobile screens", async ({ page }) => {
     ),
   ).toBe(false);
 });
+
+test("signed-out agent API requests are denied before reading or running tasks", async ({
+  request,
+}) => {
+  for (const [method, path] of [
+    ["GET", "/api/agent"],
+    ["POST", "/api/agent/tasks"],
+    ["PATCH", "/api/agent/leads/test-lead"],
+    ["POST", "/api/agent/leads/test-lead/send"],
+  ]) {
+    const response = await request.fetch(path, { method });
+    expect(response.status(), path).toBe(401);
+    expect(await response.json()).toEqual({
+      error: "Sign in to access this Localy workspace.",
+    });
+  }
+});
+
+test("the Agent page sends the signed-in token to its private server endpoint", async ({
+  page,
+}) => {
+  await mockProject(page);
+  let authorization: string | undefined;
+  await page.route("**/api/agent", async (route) => {
+    authorization = route.request().headers().authorization;
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ leads: [], tasks: [] }),
+    });
+  });
+  await signIn(page, "/agent");
+  await expect(
+    page.getByRole("heading", { name: "No leads yet" }),
+  ).toBeVisible();
+  expect(authorization).toBe(`Bearer ${session.access_token}`);
+});

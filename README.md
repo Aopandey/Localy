@@ -68,6 +68,7 @@ State persists in this browser's local storage. Reloading preserves the conversa
 | `/opportunities`      | Search and filter all 12 opportunities                                     |
 | `/opportunities/[id]` | Original post, intent analysis, service match, edit/approve/ignore         |
 | `/community`          | Five realistic classified posts across Facebook, Reddit, Discord, Telegram |
+| `/agent`              | Team's OpenClaw/Aside discovery and owner-approved reply workflow          |
 | `/conversations`      | Customer inbox and staged conversations                                    |
 | `/conversations/[id]` | Selected conversation and booking confirmation                             |
 | `/bookings`           | Appointment list and acquisition metrics                                   |
@@ -119,7 +120,7 @@ Components consume the provider's normalized domain data. Services choose the co
 
 Follow [supabase/SETUP.md](supabase/SETUP.md) to create the tables, configure `.env.local`, create a Localy app login, and grant workspace access. Supabase mode requires sign-in and approved workspace membership; the database enforces this access with Row Level Security.
 
-Only **community posts and opportunities** are connected in this phase. These feeds refresh through Realtime and a 15-second foreground check. Business settings, conversations, bookings, and activity remain sample/browser data and are labeled accordingly. Live opportunity outreach is disabled until the agent actions are connected. Empty feeds stay empty; errors never substitute sample posts.
+Only **community posts and opportunities** are connected in this phase. These feeds refresh through Realtime and a 15-second foreground check. Business settings, conversations, bookings, and activity remain sample/browser data and are labeled accordingly. Outreach on Supabase opportunities is disabled until their agent actions are connected. The separate Agent page retains its local OpenClaw store; its server endpoints also require verified sign-in and workspace membership in Supabase mode. Empty feeds stay empty; errors never substitute sample posts.
 
 Share [supabase/TEAMMATE_HANDOFF.md](supabase/TEAMMATE_HANDOFF.md) with the teammate writing data. It includes table names, JSON examples, and a backend producer script. Frontend connection uses only a publishable key. Keep backend secret keys out of this public repository.
 
@@ -209,7 +210,7 @@ OpenClaw/NemoClaw/OpenShell, the local model, and any RAG system live behind the
 
 ## Validation
 
-Lint, strict TypeScript, and production builds pass. Four mock browser tests cover the discovery-to-booking flow, persisted state and duplicate prevention, guided demo, business editing, filters, ignore/restore, reset, and mobile navigation. Seven Supabase browser tests cover signed-out privacy, signup, login/logout, session persistence, membership denial/revocation, empty feeds, refresh, invalid records, and mobile sign-in. Supabase requests in those tests are intercepted; a real project must also be configured and checked using the setup guide.
+Lint, strict TypeScript, and production builds pass. Four mock browser tests cover the discovery-to-booking flow, persisted state and duplicate prevention, guided demo, business editing, filters, ignore/restore, reset, and mobile navigation. Nine Supabase tests cover signed-out privacy, signup, login/logout, session persistence, membership denial/revocation, empty feeds, refresh, invalid records, mobile sign-in, and the Agent API authentication boundary. Supabase requests in browser flows are intercepted; a real project must also be configured and checked using the setup guide.
 
 Start the app before running tests. Use `pnpm test:e2e` against mock mode and `pnpm test:supabase` against Supabase mode. Tests use an installed Google Chrome. If Chrome is unavailable, install it or adjust `playwright.config.ts` to your browser. `PLAYWRIGHT_BASE_URL` can target a different running instance. Prefer a production build for browser checks; when testing the development server, use `http://localhost:3000` as the base URL. Supabase browser tests intercept Auth/feed requests and do not write to your real project.
 

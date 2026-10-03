@@ -78,7 +78,9 @@ Insert/update the opportunity and its linked post together in a server/database 
 
 ## Current action boundary
 
-The Supabase mode is **read-only for feed data**. Approve/send, ignore/restore, and opening live conversations are disabled with a clear explanation until the agent action endpoints are connected. Storing a generated response does not send it to a community.
+The Supabase mode is **read-only for feed data**. On Supabase opportunities, approve/send, ignore/restore, and opening live conversations are disabled until those feed records are connected to agent actions. Storing a generated response does not send it to a community.
+
+The separate **Agent** page retains the team's OpenClaw/Aside workflow and local agent store. It is not backed by these Supabase feed tables. In Supabase mode, its server endpoints require a verified Localy Auth token and workspace membership. Connecting those agent leads to the feed tables is the producer's next integration step.
 
 Business configuration, bookings, conversations, and activity still use browser/sample state. Sample business context is supplied in `examples/business.json`. Do not treat those sample metrics as Supabase booking totals.
 
