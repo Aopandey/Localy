@@ -14,3 +14,6 @@ Thumbs.db
 
 # OpenClaw agent store (leads, tasks, logs)
 /data/
+
+# Local Vercel project link and deployment output
+.vercel/

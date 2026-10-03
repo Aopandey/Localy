@@ -274,3 +274,33 @@ test("the Agent page sends the signed-in token to its private server endpoint", 
   ).toBeVisible();
   expect(authorization).toBe(`Bearer ${session.access_token}`);
 });
+
+test("hosted agent controls explain the pending connection and cannot start tasks", async ({
+  page,
+}) => {
+  await mockProject(page);
+  await page.route("**/api/agent", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        leads: [],
+        tasks: [],
+        available: false,
+        message: "Connect your teammate’s discovery agent.",
+      }),
+    }),
+  );
+  await signIn(page, "/agent");
+  await expect(
+    page.getByText("Agent not connected", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Connect your discovery agent" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("textbox", { name: "Search query" }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: "Find customers", exact: true }),
+  ).toBeDisabled();
+});

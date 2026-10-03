@@ -124,6 +124,10 @@ Only **community posts and opportunities** are connected in this phase. These fe
 
 Share [supabase/TEAMMATE_HANDOFF.md](supabase/TEAMMATE_HANDOFF.md) with the teammate writing data. It includes table names, JSON examples, and a backend producer script. Frontend connection uses only a publishable key. Keep backend secret keys out of this public repository.
 
+## Host on Vercel
+
+See [VERCEL.md](VERCEL.md) for the free Hobby deployment, required environment values, and Supabase sign-in redirect settings. The hosted dashboard reads its private feeds from Supabase. The Agent page shows the pending connection until the teammate's local OpenClaw service is linked; hosted actions cannot attempt to launch the local process.
+
 ## Connect the backend
 
 Copy `.env.example` to `.env.local`, set `NEXT_PUBLIC_DATA_MODE=api`, and optionally set `NEXT_PUBLIC_API_BASE_URL` to the backend origin. Restart Next.js after changes.
@@ -210,7 +214,7 @@ OpenClaw/NemoClaw/OpenShell, the local model, and any RAG system live behind the
 
 ## Validation
 
-Lint, strict TypeScript, and production builds pass. Four mock browser tests cover the discovery-to-booking flow, persisted state and duplicate prevention, guided demo, business editing, filters, ignore/restore, reset, and mobile navigation. Nine Supabase tests cover signed-out privacy, signup, login/logout, session persistence, membership denial/revocation, empty feeds, refresh, invalid records, mobile sign-in, and the Agent API authentication boundary. Supabase requests in browser flows are intercepted; a real project must also be configured and checked using the setup guide.
+Lint, strict TypeScript, and production builds pass. Four mock browser tests cover the discovery-to-booking flow, persisted state and duplicate prevention, guided demo, business editing, filters, ignore/restore, reset, and mobile navigation. Ten Supabase tests cover signed-out privacy, signup, login/logout, session persistence, membership denial/revocation, empty feeds, refresh, invalid records, mobile sign-in, the Agent API authentication boundary, and pending hosted-agent controls. Supabase requests in browser flows are intercepted; a real project must also be configured and checked using the setup guide.
 
 Start the app before running tests. Use `pnpm test:e2e` against mock mode and `pnpm test:supabase` against Supabase mode. Tests use an installed Google Chrome. If Chrome is unavailable, install it or adjust `playwright.config.ts` to your browser. `PLAYWRIGHT_BASE_URL` can target a different running instance. Prefer a production build for browser checks; when testing the development server, use `http://localhost:3000` as the base URL. Supabase browser tests intercept Auth/feed requests and do not write to your real project.
 

@@ -60,7 +60,12 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-type AgentSnapshot = { tasks: AgentTask[]; leads: AgentLead[] };
+type AgentSnapshot = {
+  tasks: AgentTask[];
+  leads: AgentLead[];
+  available?: boolean;
+  message?: string | null;
+};
 const fetchAgent = () => call<AgentSnapshot>("/api/agent");
 
 function since(iso: string) {
@@ -80,10 +85,16 @@ export function AgentConsole() {
   const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [available, setAvailable] = useState(true);
+  const [connectionMessage, setConnectionMessage] = useState<string | null>(
+    null,
+  );
 
   const apply = useCallback((res: AgentSnapshot) => {
     setTasks(res.tasks);
     setLeads(res.leads);
+    setAvailable(res.available ?? true);
+    setConnectionMessage(res.message ?? null);
   }, []);
   const load = useCallback(async () => apply(await fetchAgent()), [apply]);
   const working = tasks.some(
@@ -147,11 +158,19 @@ export function AgentConsole() {
       <PageHeader
         eyebrow="YOUR AGENT, ON COMMAND"
         title="Agent"
-        subtitle="Tell Localy where to look. It reads, finds people who need you, and drafts a reply for your approval."
+        subtitle={
+          available
+            ? "Tell Localy where to look. It reads, finds people who need you, and drafts a reply for your approval."
+            : "Your dashboard is online. Connect your teammate’s agent to start finding new customers."
+        }
         action={
-          <Badge tone={working ? "blue" : "green"}>
+          <Badge tone={!available ? "neutral" : working ? "blue" : "green"}>
             <Bot size={12} />
-            {working ? "Agent working…" : "OpenClaw + Aside ready"}
+            {!available
+              ? "Agent not connected"
+              : working
+                ? "Agent working…"
+                : "OpenClaw + Aside ready"}
           </Badge>
         }
       />
@@ -191,6 +210,7 @@ export function AgentConsole() {
                 {mode === "search" ? <Search size={16} /> : <Globe size={16} />}
                 <input
                   id="agent-input"
+                  disabled={!available}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={
@@ -203,7 +223,10 @@ export function AgentConsole() {
                   }
                 />
               </label>
-              <Button type="submit" disabled={busy || working || !input.trim()}>
+              <Button
+                type="submit"
+                disabled={!available || busy || working || !input.trim()}
+              >
                 <Sparkles size={15} />
                 {mode === "search" ? "Find customers" : "Watch page"}
               </Button>
@@ -211,7 +234,12 @@ export function AgentConsole() {
             {mode === "search" && (
               <div className="agent-presets">
                 {SEARCH_PRESETS.map((p) => (
-                  <button key={p} type="button" onClick={() => setInput(p)}>
+                  <button
+                    key={p}
+                    type="button"
+                    disabled={!available}
+                    onClick={() => setInput(p)}
+                  >
                     {p}
                   </button>
                 ))}
@@ -229,9 +257,14 @@ export function AgentConsole() {
             <span>{leads.filter((l) => l.status !== "ignored").length}</span>
           </h2>
           {leads.length === 0 ? (
-            <EmptyState title="No leads yet">
-              Run a search or watch a page. Leads appear here with a drafted
-              reply.
+            <EmptyState
+              title={
+                available ? "No leads yet" : "Connect your discovery agent"
+              }
+            >
+              {available
+                ? "Run a search or watch a page. Leads appear here with a drafted reply."
+                : connectionMessage}
             </EmptyState>
           ) : (
             <div className="feed-list">
@@ -239,7 +272,7 @@ export function AgentConsole() {
                 <LeadCard
                   key={lead.id}
                   lead={lead}
-                  disabled={busy || working}
+                  disabled={!available || busy || working}
                   run={run}
                 />
               ))}

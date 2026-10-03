@@ -3,11 +3,14 @@ import type { AgentTask } from "@/lib/types/agent";
 import { updateStore } from "@/server/agent-store";
 import { runTask } from "@/server/openclaw";
 import { requireWorkspaceMember } from "@/server/workspace-auth";
+import { requireAgentRuntime } from "@/server/agent-runtime";
 
 /** Start a discovery task: watch a page, or search the web. */
 export async function POST(request: Request) {
   const denied = await requireWorkspaceMember(request);
   if (denied) return denied;
+  const unavailable = requireAgentRuntime();
+  if (unavailable) return unavailable;
   const body = (await request.json().catch(() => ({}))) as {
     kind?: string;
     target?: string;

@@ -1,5 +1,6 @@
 import { updateStore } from "@/server/agent-store";
 import { requireWorkspaceMember } from "@/server/workspace-auth";
+import { requireAgentRuntime } from "@/server/agent-runtime";
 
 /** Ignore a lead, or bring it back. */
 export async function PATCH(
@@ -8,6 +9,8 @@ export async function PATCH(
 ) {
   const denied = await requireWorkspaceMember(request);
   if (denied) return denied;
+  const unavailable = requireAgentRuntime();
+  if (unavailable) return unavailable;
   const { id } = await ctx.params;
   const { status } = (await request.json().catch(() => ({}))) as {
     status?: string;

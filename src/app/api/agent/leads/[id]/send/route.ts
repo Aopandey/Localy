@@ -2,6 +2,7 @@ import type { AgentTask } from "@/lib/types/agent";
 import { updateStore } from "@/server/agent-store";
 import { runTask } from "@/server/openclaw";
 import { requireWorkspaceMember } from "@/server/workspace-auth";
+import { requireAgentRuntime } from "@/server/agent-runtime";
 
 /** Owner approved a reply: have the agent post exactly this text through Aside. */
 export async function POST(
@@ -10,6 +11,8 @@ export async function POST(
 ) {
   const denied = await requireWorkspaceMember(request);
   if (denied) return denied;
+  const unavailable = requireAgentRuntime();
+  if (unavailable) return unavailable;
   const { id } = await ctx.params;
   const { response } = (await request.json().catch(() => ({}))) as {
     response?: string;
