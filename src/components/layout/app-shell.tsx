@@ -10,8 +10,6 @@ import {
   Store,
   Settings,
   ArrowUpRight,
-  ChevronDown,
-  Sparkles,
   Menu,
   Radio,
   Play,
@@ -78,16 +76,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             localy<span className="brand-dot">.</span>
           </span>
         </Link>
-        <Link href="/business" className="workspace-switch">
-          <span className="business-avatar">
-            <Store size={18} />
-          </span>
-          <span>
-            <strong>Cambridge Pet Groomers</strong>
-            <small>Cambridge, MA</small>
-          </span>
-          <ChevronDown size={14} />
-        </Link>
         <div className="nav-label">WORKSPACE</div>
         <nav aria-label="Main navigation">
           {nav.map((n) => {
@@ -114,29 +102,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="sidebar-bottom">
-          <div className="agent-card">
-            <div className="agent-symbol">
-              <Sparkles size={20} />
-            </div>
-            <div>
-              <strong>AI Agent</strong>
-              <span>
-                <i
-                  className={cx(
-                    "status-dot",
-                    data && !data.settings.agentOnline && "paused",
-                  )}
-                />
-                {data?.settings.agentOnline === false ? "Paused" : "Online"}
-                <small>· {isApiMode ? "Connected" : "Demo"}</small>
-              </span>
-            </div>
-            <span className="agent-bars">
-              <i />
-              <i />
-              <i />
-            </span>
-          </div>
           <Link href="/settings" className="help-link">
             <CircleHelp size={17} />
             Workspace settings
@@ -187,13 +152,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                 Demo Mode
               </Button>
             )}
-            <Link
-              className="topbar-avatar"
-              href="/business"
-              aria-label="Business profile"
-            >
-              CP
-            </Link>
           </div>
         </header>
         <main id="main-content" className="main-content" tabIndex={-1}>
