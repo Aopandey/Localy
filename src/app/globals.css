@@ -178,41 +178,6 @@ h3 {
   margin-top: auto;
   padding-top: 30px;
 }
-.agent-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px 12px;
-  background: #f6f9f6;
-  border: 1px solid #e9eee8;
-  border-radius: 10px;
-}
-.agent-symbol {
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  color: var(--green);
-  background: #e8f3e9;
-  border-radius: 9px;
-}
-.agent-card strong {
-  display: block;
-  font-size: 12px;
-  font-weight: 650;
-}
-.agent-card span:not(.agent-bars) {
-  font-size: 10px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 4px;
-  color: #6a7a6c;
-}
-.agent-card small {
-  font-size: 10px;
-  color: #8e9b91;
-}
 .status-dot {
   display: inline-block;
   width: 6px;
@@ -225,25 +190,6 @@ h3 {
 .status-dot.paused {
   background: #b69b69;
   box-shadow: none;
-}
-.agent-bars {
-  margin-left: auto;
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 14px;
-}
-.agent-bars i {
-  width: 3px;
-  background: #75b487;
-  border-radius: 2px;
-  height: 7px;
-}
-.agent-bars i:nth-child(2) {
-  height: 13px;
-}
-.agent-bars i:nth-child(3) {
-  height: 10px;
 }
 .help-link {
   display: flex;
@@ -264,18 +210,6 @@ h3 {
   align-items: center;
 }
 .user-avatar,
-.topbar-avatar {
-  background: #f4ece0;
-  color: #a4845d;
-  width: 32px;
-  height: 32px;
-  display: inline-grid;
-  place-items: center;
-  font-size: 10px;
-  font-weight: 650;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
 .sidebar-user strong {
   display: block;
   font-size: 11px;
@@ -333,12 +267,6 @@ h3 {
   gap: 7px;
   font-size: 10px;
   color: #89968b;
-}
-.topbar-avatar {
-  background: #e5eee3;
-  color: #628260;
-  border: 3px solid #fff;
-  box-shadow: 0 0 0 1px var(--border);
 }
 .main-content {
   padding: 34px 37px 0;
