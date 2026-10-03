@@ -1,6 +1,5 @@
 "use client";
-import { Megaphone, Sparkles, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Megaphone } from "lucide-react";
 import { useLocaly } from "@/components/providers/localy-provider";
 import {
   PageHeader,
@@ -43,19 +42,6 @@ export function Overview() {
           </div>
         </section>
         <ActivityFeed />
-      </div>
-      <div className="insight-strip">
-        <span className="insight-symbol">
-          <Sparkles size={18} />
-        </span>
-        <span>
-          <strong>Good conversations are good business.</strong> Localy surfaces
-          demand. You decide when to reach out.
-        </span>
-        <Link href="/business">
-          Fine-tune your business
-          <ArrowRight size={14} />
-        </Link>
       </div>
     </>
   );

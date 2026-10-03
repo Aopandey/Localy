@@ -10,7 +10,6 @@ import {
   Store,
   Settings,
   ArrowUpRight,
-  ChevronDown,
   Sparkles,
   Menu,
   Radio,
@@ -75,16 +74,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           <span>
             localy<span className="brand-dot">.</span>
           </span>
-        </Link>
-        <Link href="/business" className="workspace-switch">
-          <span className="business-avatar">
-            <Store size={18} />
-          </span>
-          <span>
-            <strong>Cambridge Pet Groomers</strong>
-            <small>Cambridge, MA</small>
-          </span>
-          <ChevronDown size={14} />
         </Link>
         <div className="nav-label">WORKSPACE</div>
         <nav aria-label="Main navigation">

@@ -120,15 +120,6 @@ h3 {
 .brand-dot {
   color: #2c9767;
 }
-.workspace-switch {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin: 29px 0 25px;
-  padding: 12px 10px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
 .business-avatar {
   background: #f1f4ef;
   width: 34px;
@@ -139,27 +130,13 @@ h3 {
   color: #66866e;
   flex-shrink: 0;
 }
-.workspace-switch strong {
-  font-size: 10.5px;
-  display: block;
-  white-space: nowrap;
-}
-.workspace-switch small {
-  font-size: 10px;
-  color: var(--muted);
-  display: block;
-  margin-top: 4px;
-}
-.workspace-switch > svg {
-  margin-left: auto;
-  color: var(--muted);
-}
 .nav-label {
   font-size: 10px;
   letter-spacing: 1.6px;
   font-weight: 650;
   color: #9ba69e;
   padding: 0 14px;
+  margin-top: 32px;
   margin-bottom: 12px;
 }
 .sidebar nav {
@@ -975,11 +952,6 @@ h3 {
   border-radius: 9px;
   color: #8b9c88;
   font-size: 10px;
-}
-.insight-symbol {
-  display: inline-grid;
-  place-items: center;
-  color: #82a279;
 }
 .insight-strip strong {
   color: #6f886b;
@@ -2375,17 +2347,6 @@ td small {
   .topbar {
     padding: 0 25px;
   }
-  .workspace-switch {
-    padding: 10px 7px;
-    gap: 6px;
-  }
-  .workspace-switch strong {
-    font-size: 10px;
-  }
-  .workspace-switch .business-avatar {
-    width: 29px;
-    height: 29px;
-  }
   .metric-grid {
     gap: 11px;
   }
@@ -2591,16 +2552,6 @@ td small {
   }
   .toast {
     left: 50%;
-  }
-  .workspace-switch strong {
-    font-size: 11px;
-  }
-  .workspace-switch .business-avatar {
-    width: 34px;
-    height: 34px;
-  }
-  .workspace-switch {
-    gap: 9px;
   }
   .conversation-workspace {
     grid-template-columns: 190px minmax(0, 1fr);
