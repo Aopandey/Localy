@@ -4,6 +4,10 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   reporter: "list",
+  projects: [
+    { name: "mock", testMatch: "demo.spec.ts" },
+    { name: "supabase", testMatch: "supabase.spec.ts" },
+  ],
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000",
     ...devices["Desktop Chrome"],

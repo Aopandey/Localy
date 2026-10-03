@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useLocaly } from "@/components/providers/localy-provider";
 import { money } from "@/lib/utils";
+import { isSupabaseMode } from "@/services/api";
 export function MetricCards() {
   const { data } = useLocaly();
   if (!data) return null;
@@ -35,14 +36,18 @@ export function MetricCards() {
       label: "Bookings",
       value: acquired.length,
       icon: CalendarCheck,
-      note: "Customers acquired by Localy",
+      note: isSupabaseMode
+        ? "Sample bookings · not connected yet"
+        : "Customers acquired by Localy",
       color: "purple",
     },
     {
       label: "Revenue Generated",
       value: money(acquired.reduce((a, b) => a + b.price, 0)),
       icon: DollarSign,
-      note: "From confirmed & completed bookings",
+      note: isSupabaseMode
+        ? "Sample revenue · not connected yet"
+        : "From confirmed & completed bookings",
       color: "green",
     },
   ];

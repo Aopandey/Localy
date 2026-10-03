@@ -14,7 +14,7 @@ function Run-PackageManager([string[]]$Arguments) {
   else { throw 'Install Node.js with npm or install pnpm to run Localy.' }
   if ($LASTEXITCODE -ne 0) { throw "Package command failed with exit code $LASTEXITCODE." }
 }
-if (-not (Test-Path -LiteralPath 'node_modules\next')) { Run-PackageManager @('install') }
+if (-not (Test-Path -LiteralPath 'node_modules\next') -or -not (Test-Path -LiteralPath 'node_modules\@supabase\supabase-js')) { Run-PackageManager @('install') }
 if ($Mode -eq 'check') {
   Run-PackageManager @('run', 'lint')
   Run-PackageManager @('run', 'typecheck')

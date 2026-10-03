@@ -5,11 +5,13 @@ import {
   PageHeader,
   SectionHeading,
   LoadingState,
+  EmptyState,
 } from "@/components/ui/primitives";
 import { MetricCards } from "./metric-cards";
 import { DemandHero } from "./demand-hero";
 import { ActivityFeed } from "./activity-feed";
 import { OpportunityCard } from "@/components/opportunities/opportunity-card";
+import { isSupabaseMode } from "@/services/api";
 export function Overview() {
   const { data } = useLocaly();
   if (!data) return <LoadingState />;
@@ -18,7 +20,11 @@ export function Overview() {
       <PageHeader
         eyebrow="YOUR NEIGHBORHOOD, WORKING FOR YOU"
         title={`Good morning, ${data.business.name}`}
-        subtitle="Localy is watching your local communities for new customers."
+        subtitle={
+          isSupabaseMode
+            ? "Community posts and opportunities come from your private Supabase workspace."
+            : "Localy is watching your local communities for new customers."
+        }
         action={
           <span className="ad-spend">
             <Megaphone size={15} />
@@ -36,6 +42,12 @@ export function Overview() {
             href="/opportunities"
           />
           <div className="latest-opportunities">
+            {!data.opportunities.length && (
+              <EmptyState title="No opportunities yet">
+                Opportunities will appear here when your teammate adds them to
+                Supabase.
+              </EmptyState>
+            )}
             {data.opportunities.slice(0, 3).map((o) => (
               <OpportunityCard opportunity={o} key={o.id} />
             ))}

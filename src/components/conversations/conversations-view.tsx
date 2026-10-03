@@ -22,7 +22,7 @@ import {
 import { SourceIcon } from "@/components/ui/source-icon";
 import { advanceConversation } from "@/services/conversations";
 import { confirmBooking } from "@/services/bookings";
-import { isApiMode } from "@/services/api";
+import { isApiMode, isSupabaseMode } from "@/services/api";
 import { money } from "@/lib/utils";
 export function ConversationsView({ id }: { id?: string }) {
   const { data, act, busy, refresh, demoStep, setDemoStep } = useLocaly();
@@ -72,7 +72,11 @@ export function ConversationsView({ id }: { id?: string }) {
       <PageHeader
         eyebrow="CONVERSATIONS THAT CONVERT"
         title="Conversations"
-        subtitle="From the first hello to a spot on your calendar."
+        subtitle={
+          isSupabaseMode
+            ? "Conversations still use sample data. Your teammate will connect the agent next."
+            : "From the first hello to a spot on your calendar."
+        }
         action={
           <Badge tone="green">
             {data.conversations.length} customer{" "}

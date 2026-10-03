@@ -29,8 +29,9 @@ import {
   approveOpportunity,
   setOpportunityStatus,
 } from "@/services/opportunities";
-import { money, percent } from "@/lib/utils";
+import { money, percent, intentLabels } from "@/lib/utils";
 import type { Opportunity } from "@/lib/types";
+import { isSupabaseMode } from "@/services/api";
 export function OpportunityDetail({ id }: { id: string }) {
   const { data } = useLocaly();
   if (!data) return <LoadingState />;
@@ -73,7 +74,7 @@ function Detail({ opportunity: o }: { opportunity: Opportunity }) {
     },
     {
       label: "Purchase Intent",
-      value: o.intent.purchaseIntent === "high" ? "High" : "Medium",
+      value: intentLabels[o.intent.purchaseIntent],
       icon: Sparkles,
     },
   ];
@@ -127,8 +128,16 @@ function Detail({ opportunity: o }: { opportunity: Opportunity }) {
                   .join("")}
               </span>
               <strong>{o.customer}</strong>
-              <Badge tone="green">
-                {o.intent.purchaseIntent === "high" ? "High" : "Medium"} Intent
+              <Badge
+                tone={
+                  o.intent.purchaseIntent === "high"
+                    ? "green"
+                    : o.intent.purchaseIntent === "medium"
+                      ? "amber"
+                      : "neutral"
+                }
+              >
+                {intentLabels[o.intent.purchaseIntent]} Intent
               </Badge>
             </div>
           </section>
@@ -178,11 +187,20 @@ function Detail({ opportunity: o }: { opportunity: Opportunity }) {
               <ShieldCheck size={14} />
               Introduces itself as your business’s AI assistant.
             </div>
+            {isSupabaseMode && (
+              <p className="live-feed-note">
+                This opportunity is live. Outreach and conversation actions will
+                connect with your teammate’s agent.
+              </p>
+            )}
             {o.status === "new" ? (
               <div className="response-actions">
-                <Button disabled={busy || !draft.trim()} onClick={approve}>
+                <Button
+                  disabled={busy || !draft.trim() || isSupabaseMode}
+                  onClick={approve}
+                >
                   <Send size={15} />
-                  Approve & Send
+                  {isSupabaseMode ? "Outreach not connected" : "Approve & Send"}
                 </Button>
                 <Button
                   variant="secondary"
@@ -193,7 +211,7 @@ function Detail({ opportunity: o }: { opportunity: Opportunity }) {
                 </Button>
                 <Button
                   variant="ghost"
-                  disabled={busy}
+                  disabled={busy || isSupabaseMode}
                   onClick={() =>
                     act(
                       () => setOpportunityStatus(o.id, "ignored"),
@@ -213,9 +231,13 @@ function Detail({ opportunity: o }: { opportunity: Opportunity }) {
                     "Opportunity restored.",
                   )
                 }
-                disabled={busy}
+                disabled={busy || isSupabaseMode}
               >
                 Restore opportunity
+              </Button>
+            ) : isSupabaseMode ? (
+              <Button disabled variant="secondary">
+                Conversation not connected
               </Button>
             ) : (
               <Link

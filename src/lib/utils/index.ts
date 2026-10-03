@@ -1,3 +1,10 @@
+import type { PurchaseIntent } from "@/lib/types";
+export const intentLabels: Record<PurchaseIntent, string> = {
+  high: "High",
+  medium: "Medium",
+  low: "Low",
+  irrelevant: "Irrelevant",
+};
 export const money = (amount: number) =>
   new Intl.NumberFormat("en-US", {
     style: "currency",

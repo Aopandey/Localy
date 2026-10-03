@@ -1,0 +1,13 @@
+{
+  "id": "post_1",
+  "author": "Alex Morgan",
+  "initials": "AM",
+  "source": "Facebook Group",
+  "community": "Cambridge Community",
+  "content": "Looking for a dog groomer in Cambridge tomorrow for my golden retriever. Hoping to stay under $100.",
+  "intent": "high",
+  "confidence": 0.94,
+  "time": "2 min ago",
+  "opportunityId": "opp_001",
+  "explanation": "Specific service, location, date, and budget. Ready to book."
+}

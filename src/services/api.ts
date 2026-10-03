@@ -10,7 +10,10 @@ export const API_ENDPOINTS = {
   settings: "/api/settings",
   demo: "/api/demo/reset",
 } as const;
-export const isApiMode = process.env.NEXT_PUBLIC_DATA_MODE === "api";
+export const dataMode = process.env.NEXT_PUBLIC_DATA_MODE ?? "mock";
+export const isApiMode = dataMode === "api";
+export const isSupabaseMode = dataMode === "supabase";
+export const isMockMode = !isApiMode && !isSupabaseMode;
 // Hemish and Jay supply normalized JSON at these endpoints. No AI runs in this frontend.
 export async function request<T>(
   path: string,

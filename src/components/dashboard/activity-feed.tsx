@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useLocaly } from "@/components/providers/localy-provider";
+import { isSupabaseMode } from "@/services/api";
 const icons = {
   detected: Radar,
   matched: Check,
@@ -27,7 +28,11 @@ export function ActivityFeed() {
               data.settings.agentOnline ? "status-dot" : "status-dot paused"
             }
           />
-          {data.settings.agentOnline ? "Online" : "Paused"}
+          {isSupabaseMode
+            ? "Sample"
+            : data.settings.agentOnline
+              ? "Online"
+              : "Paused"}
         </span>
       </div>
       <div className="activity-timeline">
@@ -54,7 +59,9 @@ export function ActivityFeed() {
         <ArrowRight size={14} />
       </Link>
       <div className="activity-note">
-        Simulated activity · you approve every first reply
+        {isSupabaseMode
+          ? "Sample activity · agent events will connect next"
+          : "Simulated activity · you approve every first reply"}
       </div>
     </section>
   );

@@ -9,7 +9,7 @@ import {
 import type { Opportunity } from "@/lib/types";
 import { Badge } from "@/components/ui/primitives";
 import { SourceIcon } from "@/components/ui/source-icon";
-import { money, percent } from "@/lib/utils";
+import { money, percent, intentLabels } from "@/lib/utils";
 export function OpportunityCard({
   opportunity: o,
   compact = false,
@@ -64,8 +64,16 @@ export function OpportunityCard({
       </div>
       <div className="opportunity-bottom">
         <div className="opportunity-scores">
-          <Badge tone={o.intent.purchaseIntent === "high" ? "green" : "amber"}>
-            {o.intent.purchaseIntent === "high" ? "High" : "Medium"} intent ·{" "}
+          <Badge
+            tone={
+              o.intent.purchaseIntent === "high"
+                ? "green"
+                : o.intent.purchaseIntent === "medium"
+                  ? "amber"
+                  : "neutral"
+            }
+          >
+            {intentLabels[o.intent.purchaseIntent]} intent ·{" "}
             {percent(o.intentScore)}
           </Badge>
           <span className="match-tag">

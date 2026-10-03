@@ -1,5 +1,101 @@
 @import "tailwindcss";
 
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  background: radial-gradient(ellipse at top, #edf6ed, #f7f9f8 65%);
+}
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 35px;
+}
+.auth-card .brand {
+  margin-bottom: 30px;
+  padding: 0;
+}
+.auth-card h1 {
+  font-size: 25px;
+  margin: 15px 0 10px;
+}
+.auth-card > p {
+  color: #657660;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.auth-private {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #628168;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.auth-card form {
+  margin-top: 25px;
+}
+.auth-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #60715c;
+  font-size: 11px;
+  margin-bottom: 18px;
+}
+.auth-card input {
+  border: 1px solid #dce6db;
+  border-radius: 7px;
+  padding: 11px 12px;
+  width: 100%;
+  background: #fff;
+  color: #3f573e;
+}
+.auth-card form .button {
+  width: 100%;
+  margin-top: 7px;
+}
+.auth-card > .button {
+  width: 100%;
+  white-space: normal;
+  margin-top: 15px;
+  line-height: 1.8;
+}
+.auth-hint {
+  font-size: 10px !important;
+  margin-top: 15px;
+}
+.auth-tagline {
+  margin-top: 22px;
+  font-size: 11px;
+  color: #789274;
+}
+.auth-alert,
+.auth-message {
+  font-size: 11px;
+  line-height: 1.8;
+  padding: 12px;
+  border-radius: 7px;
+  margin-bottom: 15px;
+}
+.auth-alert {
+  background: #fff2e7;
+  color: #916f43;
+}
+.auth-message {
+  background: #edf6e9;
+  color: #526c48;
+}
+.live-feed-note {
+  font-size: 11px;
+  line-height: 1.8;
+  color: #657660;
+  margin-bottom: 18px;
+}
+
 @theme inline {
   --color-primary: #197550;
   --color-canvas: #f7f9f8;

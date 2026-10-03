@@ -20,6 +20,7 @@ import {
   LoadingState,
 } from "@/components/ui/primitives";
 import type { Business } from "@/lib/types";
+import { isSupabaseMode } from "@/services/api";
 export function BusinessProfile() {
   const { data } = useLocaly();
   if (!data) return <LoadingState />;
@@ -61,7 +62,11 @@ function BusinessForm({ initial }: { initial: Business }) {
       <PageHeader
         eyebrow="WHAT MAKES YOUR BUSINESS A MATCH"
         title="Business Profile"
-        subtitle="Your services, your neighborhood, your availability. Localy starts here."
+        subtitle={
+          isSupabaseMode
+            ? "Business settings are saved in this browser. Shared business storage will connect next."
+            : "Your services, your neighborhood, your availability. Localy starts here."
+        }
         action={
           <Badge tone="green">
             <ShieldCheck size={13} />

@@ -19,10 +19,11 @@ import {
   Bot,
 } from "lucide-react";
 import { useLocaly } from "@/components/providers/localy-provider";
-import { Button } from "@/components/ui/primitives";
+import { Button, EmptyState } from "@/components/ui/primitives";
 import { DemoGuide } from "@/components/demo/demo-guide";
 import { resetDemo } from "@/services/agent";
-import { isApiMode } from "@/services/api";
+import { isApiMode, isSupabaseMode, isMockMode } from "@/services/api";
+import { getSupabase } from "@/lib/supabase/client";
 import { cx } from "@/lib/utils";
 import type { ReactNode } from "react";
 const nav = [
@@ -41,6 +42,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { data, error, notice, act, busy, setDemoStep, demoStep, refresh } =
     useLocaly();
   const [mobileOpen, setMobileOpen] = useState(false);
+  async function signOut() {
+    try {
+      const { error } = await getSupabase().auth.signOut();
+      if (error) throw error;
+    } catch {
+      await act(async () => {
+        throw new Error("Could not sign out. Please try again.");
+      });
+    }
+  }
   const title =
     nav.find((n) => (n.href === "/" ? path === "/" : path.startsWith(n.href)))
       ?.label ?? "Overview";
@@ -94,7 +105,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 {n.href === "/opportunities" && (
                   <span className="nav-count">
                     {data?.opportunities.filter((o) => o.status === "new")
-                      .length ?? 12}
+                      .length ?? (isSupabaseMode ? 0 : 12)}
                   </span>
                 )}
               </Link>
@@ -136,12 +147,18 @@ export function AppShell({ children }: { children: ReactNode }) {
               <i
                 className={cx(
                   "status-dot",
-                  data && !data.settings.agentOnline && "paused",
+                  (isSupabaseMode
+                    ? !data || error
+                    : data && !data.settings.agentOnline) && "paused",
                 )}
               />
-              {isApiMode ? "Connected workspace" : "Demo workspace"}
+              {isSupabaseMode
+                ? "Supabase feeds"
+                : isApiMode
+                  ? "Connected workspace"
+                  : "Demo workspace"}
             </span>
-            {!isApiMode && (
+            {isMockMode && (
               <Button
                 variant="secondary"
                 title="Restarts the sample workspace, including business settings, and opens the guided demo."
@@ -150,6 +167,11 @@ export function AppShell({ children }: { children: ReactNode }) {
               >
                 <Play size={14} fill="currentColor" />
                 Demo Mode
+              </Button>
+            )}
+            {isSupabaseMode && (
+              <Button variant="secondary" onClick={signOut}>
+                Sign out
               </Button>
             )}
           </div>
@@ -163,7 +185,13 @@ export function AppShell({ children }: { children: ReactNode }) {
               </Button>
             </div>
           )}
-          {children}
+          {!data && error ? (
+            <EmptyState title="Workspace unavailable">
+              Check the message above, then retry or sign out.
+            </EmptyState>
+          ) : (
+            children
+          )}
           <footer className="workspace-footer">
             <span>
               <MapPin size={12} />

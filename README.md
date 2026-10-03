@@ -8,7 +8,7 @@ Built for the **Dell × NVIDIA AI Hackathon**. The demo business is **Cambridge 
 
 ## Run the frontend
 
-Requires Node.js 20.19+ (Node 24 LTS recommended).
+Requires Node.js 22+ (Node 24 LTS recommended).
 
 On this Windows machine, open **Localy.code-workspace** in VS Code and run:
 
@@ -45,7 +45,7 @@ Windows equivalents: `Start-Localy.ps1 -Mode check`, `-Mode build`, and `-Mode s
 
 ## Present the demo
 
-The app launches directly into the overview. A fresh workspace shows **12 opportunities**, **8 qualified leads**, **2 Localy bookings**, **$170 generated revenue**, and **$0 ad spend**.
+Use `NEXT_PUBLIC_DATA_MODE=mock` for the original sample demo and restart the frontend. In this mode the app launches directly into the overview. A fresh workspace shows **12 opportunities**, **8 qualified leads**, **2 Localy bookings**, **$170 generated revenue**, and **$0 ad spend**.
 
 1. Open **Community Feed** and select Alex's golden retriever request.
 2. Show the extracted service, breed, Cambridge location, tomorrow date, under-$100 budget, high intent, and 94% confidence.
@@ -76,13 +76,14 @@ State persists in this browser's local storage. Reloading preserves the conversa
 
 ## Architecture
 
-Next.js App Router, React, TypeScript, Tailwind CSS v4, Lucide icons. No database, external AI service, or charting dependency is required.
+Next.js App Router, React, TypeScript, Tailwind CSS v4, Lucide icons, and the Supabase JavaScript SDK. The sample demo works without a database. Supabase mode uses Auth and private feed tables.
 
 ```text
 src/
   app/                    Route entry points and global design system
   components/
     layout/               Sidebar, header, responsive shell
+    auth/                 Private Supabase sign-in and account creation
     providers/            Workspace loading, actions, notices, error state
     dashboard/            Overview, metrics, activity, local-demand hero
     opportunities/        List, cards, intent/match detail, reply controls
@@ -97,6 +98,7 @@ src/
     types/                Centralized domain interfaces
     mock-data/            All seeded business, posts, opportunities, scripts
     utils/                Currency and score formatting
+    supabase/             Browser client and incoming-record validation
   services/
     api.ts                HTTP adapter, endpoint map, mock/API switch
     opportunities.ts      Opportunity listing, approval, status updates
@@ -106,10 +108,20 @@ src/
     business.ts           Business retrieval and updates
     agent.ts              Activity, settings, demo reset
     mock-store.ts         Persistent mock state and transactional demo actions
+    supabase-feed.ts       Private feed reads, membership checks, live updates
+supabase/                 Database setup, access grants, teammate contract
 tests/demo.spec.ts         Browser coverage of the complete demo and controls
 ```
 
-Components consume the provider's normalized domain data. The provider calls service functions; only the mock adapter touches fixture data or local storage. Backend integration does not require rewriting pages.
+Components consume the provider's normalized domain data. Services choose the configured data source. Backend integration does not require rewriting pages.
+
+## Connect Supabase
+
+Follow [supabase/SETUP.md](supabase/SETUP.md) to create the tables, configure `.env.local`, create a Localy app login, and grant workspace access. Supabase mode requires sign-in and approved workspace membership; the database enforces this access with Row Level Security.
+
+Only **community posts and opportunities** are connected in this phase. These feeds refresh through Realtime and a 15-second foreground check. Business settings, conversations, bookings, and activity remain sample/browser data and are labeled accordingly. Live opportunity outreach is disabled until the agent actions are connected. Empty feeds stay empty; errors never substitute sample posts.
+
+Share [supabase/TEAMMATE_HANDOFF.md](supabase/TEAMMATE_HANDOFF.md) with the teammate writing data. It includes table names, JSON examples, and a backend producer script. Frontend connection uses only a publishable key. Keep backend secret keys out of this public repository.
 
 ## Connect the backend
 
@@ -197,15 +209,15 @@ OpenClaw/NemoClaw/OpenShell, the local model, and any RAG system live behind the
 
 ## Validation
 
-Lint, strict TypeScript, and a production build pass. Four browser tests cover the full discovery-to-booking flow, persisted state and duplicate prevention, guided demo, business editing, filters, ignore/restore, reset, and mobile overflow/navigation.
+Lint, strict TypeScript, and production builds pass. Four mock browser tests cover the discovery-to-booking flow, persisted state and duplicate prevention, guided demo, business editing, filters, ignore/restore, reset, and mobile navigation. Seven Supabase browser tests cover signed-out privacy, signup, login/logout, session persistence, membership denial/revocation, empty feeds, refresh, invalid records, and mobile sign-in. Supabase requests in those tests are intercepted; a real project must also be configured and checked using the setup guide.
 
-Start the app before running `pnpm test:e2e`. Tests use an installed Google Chrome. If Chrome is unavailable, install it or adjust `playwright.config.ts` to your browser. `PLAYWRIGHT_BASE_URL` can target a different running instance.
+Start the app before running tests. Use `pnpm test:e2e` against mock mode and `pnpm test:supabase` against Supabase mode. Tests use an installed Google Chrome. If Chrome is unavailable, install it or adjust `playwright.config.ts` to your browser. `PLAYWRIGHT_BASE_URL` can target a different running instance. Prefer a production build for browser checks; when testing the development server, use `http://localhost:3000` as the base URL. Supabase browser tests intercept Auth/feed requests and do not write to your real project.
 
 ## Demo boundaries
 
-All community posts, analysis, activity, replies, and bookings are simulated. No outreach is sent. No real appointment is made. Only Alex's golden retriever opportunity has the complete scripted booking conversation; other opportunities support review and outreach approval.
+In mock mode, all community posts, analysis, activity, replies, and bookings are simulated. No outreach is sent. No real appointment is made. Only Alex's golden retriever opportunity has the complete scripted booking conversation; other opportunities support review and outreach approval. Supabase mode replaces posts and opportunities with database records while retaining clearly labeled sample data for the remaining features.
 
-Business profile changes persist, while existing opportunities retain their reviewed quote and matching snapshot. The demo prevents booking if the quoted price changed or 3 PM is unavailable. Reset the sample workspace to restore the exact presentation story. Dynamic rematching, arbitrary conversation workflows, true dates/time zones, real monitoring, live updates, authentication, and real booking tools are backend integration work.
+Business profile changes persist in this browser, while existing opportunities retain their reviewed quote and matching snapshot. The demo prevents booking if the quoted price changed or 3 PM is unavailable. Reset the sample workspace in mock mode to restore the presentation story. Dynamic rematching, arbitrary conversation workflows, true dates/time zones, real monitoring, and real booking tools are backend integration work.
 
 Revenue is the total of non-cancelled Localy-sourced confirmed/completed bookings in this demo workspace. The $55 historical website booking is excluded. Matching and availability are fixtures, not model inference.
 

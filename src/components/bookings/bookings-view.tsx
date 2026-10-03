@@ -15,6 +15,7 @@ import {
   EmptyState,
 } from "@/components/ui/primitives";
 import { money } from "@/lib/utils";
+import { isSupabaseMode } from "@/services/api";
 export function BookingsView() {
   const { data } = useLocaly();
   const [filter, setFilter] = useState("all");
@@ -30,7 +31,11 @@ export function BookingsView() {
       <PageHeader
         eyebrow="ON THE CALENDAR"
         title="Bookings"
-        subtitle="Real appointments from the conversations happening around you."
+        subtitle={
+          isSupabaseMode
+            ? "Sample appointments. Booking storage will connect in the next phase."
+            : "Real appointments from the conversations happening around you."
+        }
         action={
           <Badge tone="green">
             <CalendarCheck size={13} />

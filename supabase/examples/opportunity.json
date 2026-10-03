@@ -1,0 +1,50 @@
+{
+  "id": "opp_001",
+  "postId": "post_1",
+  "customer": "Alex Morgan",
+  "originalPost": "Looking for a dog groomer in Cambridge tomorrow for my golden retriever. Hoping to stay under $100.",
+  "source": "Facebook Group",
+  "community": "Cambridge Community",
+  "intent": {
+    "service": "Full Dog Grooming",
+    "pet": "Golden Retriever",
+    "location": "Cambridge",
+    "date": "Tomorrow",
+    "budget": 100,
+    "purchaseIntent": "high",
+    "confidence": 0.94
+  },
+  "match": {
+    "score": 0.96,
+    "serviceId": "svc_groom",
+    "service": "Full Groom Package",
+    "price": 85,
+    "availableSlots": ["11:00 AM", "3:00 PM"],
+    "checks": [
+      {
+        "label": "Service Match",
+        "passed": true
+      },
+      {
+        "label": "Location Match",
+        "passed": true
+      },
+      {
+        "label": "Budget Match",
+        "passed": true
+      },
+      {
+        "label": "Breed Accepted",
+        "passed": true
+      },
+      {
+        "label": "Availability",
+        "passed": true
+      }
+    ]
+  },
+  "intentScore": 0.94,
+  "status": "new",
+  "detectedAt": "Just now",
+  "suggestedResponse": "Hi! I'm the AI assistant for Cambridge Pet Groomers. We offer full grooming for golden retrievers starting at $85, and we have openings tomorrow at 11 AM and 3 PM. Would you like more details?"
+}

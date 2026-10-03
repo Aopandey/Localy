@@ -1,0 +1,44 @@
+{
+  "id": "biz_001",
+  "name": "Cambridge Pet Groomers",
+  "description": "Thoughtful grooming for your four-legged family. Locally owned in Cambridge, MA.",
+  "serviceArea": ["Cambridge", "Somerville", "Boston"],
+  "services": [
+    {
+      "id": "svc_groom",
+      "name": "Full Groom Package",
+      "price": 85,
+      "description": "Bath, brushing, haircut, nail trimming, ear cleaning, and finishing spray."
+    },
+    {
+      "id": "svc_bath",
+      "name": "Bath & Brush",
+      "price": 55,
+      "description": "A gentle bath, blow-dry, and thorough brushing."
+    },
+    {
+      "id": "svc_nails",
+      "name": "Nail Trim",
+      "price": 20,
+      "description": "A quick, gentle nail trim for comfortable paws."
+    }
+  ],
+  "acceptedPets": "Dogs",
+  "restrictions": "Large breeds accepted",
+  "hours": "9 AM – 6 PM",
+  "availableSlots": ["11:00 AM", "3:00 PM"],
+  "faqs": [
+    {
+      "question": "Does the Full Groom Package include nail trimming?",
+      "answer": "Yes! It includes a bath, brushing, haircut, nail trimming, ear cleaning, and finishing spray."
+    },
+    {
+      "question": "Do you accept large breeds?",
+      "answer": "Absolutely. Golden retrievers and other large breeds are welcome."
+    },
+    {
+      "question": "What should I bring to the appointment?",
+      "answer": "Please bring your dog on a leash and their current vaccination records."
+    }
+  ]
+}

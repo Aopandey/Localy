@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/primitives";
 import { SourceIcon } from "@/components/ui/source-icon";
 import { resetDemo, updateSettings } from "@/services/agent";
-import { isApiMode } from "@/services/api";
+import { isApiMode, isSupabaseMode, isMockMode } from "@/services/api";
 import type { Source } from "@/lib/types";
 const sources: Source[] = ["Facebook Group", "Reddit", "Discord", "Telegram"];
 export function SettingsView() {
@@ -48,17 +48,29 @@ export function SettingsView() {
                 <Radio size={18} />
                 AI Agent
               </h2>
-              <Badge tone={data.settings.agentOnline ? "green" : "neutral"}>
-                {data.settings.agentOnline ? "Online" : "Paused"}
+              <Badge
+                tone={
+                  !isSupabaseMode && data.settings.agentOnline
+                    ? "green"
+                    : "neutral"
+                }
+              >
+                {isSupabaseMode
+                  ? "Not connected"
+                  : data.settings.agentOnline
+                    ? "Online"
+                    : "Paused"}
               </Badge>
             </div>
             <div className="setting-row">
               <div>
                 <strong>Community monitoring</strong>
                 <p>
-                  {isApiMode
-                    ? "Control monitoring through your connected backend."
-                    : "Control the demo monitoring status."}
+                  {isSupabaseMode
+                    ? "Your teammate will connect the monitoring agent next."
+                    : isApiMode
+                      ? "Control monitoring through your connected backend."
+                      : "Control the demo monitoring status."}
                 </p>
               </div>
               <button
@@ -66,7 +78,7 @@ export function SettingsView() {
                 role="switch"
                 aria-checked={data.settings.agentOnline}
                 aria-label="Community monitoring"
-                disabled={busy}
+                disabled={busy || isSupabaseMode}
                 onClick={() =>
                   act(
                     () =>
@@ -109,7 +121,11 @@ export function SettingsView() {
                   <div>
                     <strong>{s}</strong>
                     <p>
-                      {isApiMode ? "Connected source" : "Simulated community"}
+                      {isSupabaseMode
+                        ? "Supabase feed"
+                        : isApiMode
+                          ? "Connected source"
+                          : "Simulated community"}
                     </p>
                   </div>
                 </div>
@@ -135,7 +151,7 @@ export function SettingsView() {
               </div>
             ))}
           </section>
-          {!isApiMode && (
+          {isMockMode && (
             <section className="card settings-section">
               <div className="card-heading">
                 <h2>
@@ -177,12 +193,20 @@ export function SettingsView() {
             <h2>Connection status</h2>
             <div className="connection-status">
               <span className="status-dot" />
-              <strong>{isApiMode ? "API mode" : "Mock data mode"}</strong>
+              <strong>
+                {isSupabaseMode
+                  ? "Supabase feeds"
+                  : isApiMode
+                    ? "API mode"
+                    : "Mock data mode"}
+              </strong>
             </div>
             <p className="form-description">
-              {isApiMode
-                ? "Localy consumes normalized JSON from your configured backend."
-                : "This workspace runs entirely in your browser. No community messages are sent and no live bookings are made."}
+              {isSupabaseMode
+                ? "Community posts and opportunities come from Supabase. Business settings, conversations, bookings, and activity still use sample data."
+                : isApiMode
+                  ? "Localy consumes normalized JSON from your configured backend."
+                  : "This workspace runs entirely in your browser. No community messages are sent and no live bookings are made."}
             </p>
             <div className="integration-status">
               <span>

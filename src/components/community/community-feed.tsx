@@ -20,6 +20,7 @@ import {
 import { SourceIcon } from "@/components/ui/source-icon";
 import { percent } from "@/lib/utils";
 import type { PurchaseIntent } from "@/lib/types";
+import { isSupabaseMode } from "@/services/api";
 const labels: Record<PurchaseIntent, string> = {
   high: "High Intent",
   medium: "Medium Intent",
@@ -45,11 +46,17 @@ export function CommunityFeed() {
         title="Community Feed"
         subtitle="Your neighborhood is talking. Find the conversations that matter."
         action={
-          <Badge tone={data.settings.agentOnline ? "green" : "neutral"}>
+          <Badge
+            tone={
+              isSupabaseMode || data.settings.agentOnline ? "green" : "neutral"
+            }
+          >
             <Radio size={12} />
-            {data.settings.agentOnline
-              ? "Monitoring demo sources"
-              : "Monitoring paused"}
+            {isSupabaseMode
+              ? "Supabase live feed"
+              : data.settings.agentOnline
+                ? "Monitoring demo sources"
+                : "Monitoring paused"}
           </Badge>
         }
       />
@@ -170,7 +177,7 @@ export function CommunityFeed() {
                   <i
                     className={
                       data.settings.enabledSources.includes(s) &&
-                      data.settings.agentOnline
+                      (isSupabaseMode || data.settings.agentOnline)
                         ? "status-dot"
                         : "status-dot paused"
                     }
@@ -190,7 +197,11 @@ export function CommunityFeed() {
               Participating communities only. Low-intent and unrelated posts
               stay out of your outreach queue.
             </p>
-            <small>All posts and monitoring are simulated in this demo.</small>
+            <small>
+              {isSupabaseMode
+                ? "Posts are read from your private Supabase workspace."
+                : "All posts and monitoring are simulated in this demo."}
+            </small>
           </div>
           <div className="local-area">
             <MapPin size={16} />

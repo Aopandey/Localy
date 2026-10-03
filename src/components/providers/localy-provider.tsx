@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useRef,
   type ReactNode,
 } from "react";
 import type { AppData } from "@/lib/types";
@@ -14,6 +15,11 @@ import { getConversations } from "@/services/conversations";
 import { getBookings } from "@/services/bookings";
 import { getBusiness } from "@/services/business";
 import { getActivity, getSettings } from "@/services/agent";
+import { isSupabaseMode } from "@/services/api";
+import {
+  subscribeToFeed,
+  verifyWorkspaceAccess,
+} from "@/services/supabase-feed";
 interface LocalyContext {
   data: AppData | null;
   error: string | null;
@@ -29,6 +35,7 @@ interface LocalyContext {
 }
 const Context = createContext<LocalyContext | null>(null);
 async function loadWorkspace(): Promise<AppData> {
+  if (isSupabaseMode) await verifyWorkspaceAccess();
   const [
     business,
     opportunities,
@@ -62,10 +69,48 @@ export function LocalyProvider({ children }: { children: ReactNode }) {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [demoStep, setDemoStep] = useState<number | null>(null);
+  const refreshing = useRef(false);
   const refresh = useCallback(async () => {
-    setData(await loadWorkspace());
-    setError(null);
+    if (refreshing.current) return;
+    refreshing.current = true;
+    try {
+      setData(await loadWorkspace());
+      setError(null);
+    } catch (e) {
+      if (isSupabaseMode) setData(null);
+      setError(
+        e instanceof Error ? e.message : "Could not refresh your workspace.",
+      );
+      throw e;
+    } finally {
+      refreshing.current = false;
+    }
   }, []);
+  useEffect(() => {
+    if (!isSupabaseMode) return;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    const update = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        void refresh().catch(() => {});
+      }, 400);
+    };
+    const unsubscribe = subscribeToFeed(update);
+    // Polling covers a missed event or unavailable Realtime. Hidden tabs stay quiet.
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") update();
+    }, 15000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") update();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      unsubscribe();
+      clearInterval(interval);
+      clearTimeout(timeout);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [refresh]);
   useEffect(() => {
     let active = true;
     loadWorkspace()
