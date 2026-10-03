@@ -2948,3 +2948,112 @@ td strong,
 .badge-blue {
   color: #486c91;
 }
+
+/* Agent page: tasks sent to OpenClaw + Aside */
+.agent-main {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  min-width: 0;
+}
+.agent-command {
+  display: grid;
+  gap: 14px;
+}
+.agent-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.agent-form .search-field {
+  flex: 1 1 280px;
+}
+.agent-form .search-field input {
+  font-size: 14px;
+}
+.agent-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.agent-presets button {
+  border: 1px solid var(--border);
+  background: var(--canvas);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.agent-presets button:hover {
+  color: var(--green);
+  border-color: var(--green);
+}
+.agent-section-title {
+  font-size: 16px;
+  margin: 8px 0 0;
+}
+.agent-section-title span {
+  color: var(--muted);
+  font-weight: 500;
+  margin-left: 4px;
+}
+.agent-tasks {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.agent-tasks li {
+  display: grid;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  min-width: 0;
+}
+.agent-tasks li > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.agent-tasks small {
+  color: var(--muted);
+}
+.agent-tasks strong {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.agent-tasks p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.agent-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.agent-checks span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.agent-checks .pass {
+  color: var(--green);
+}
+.agent-checks .fail {
+  color: #b25b1e;
+}
+.agent-lead-muted {
+  opacity: 0.6;
+}
+.badge .spinner {
+  width: 10px;
+  height: 10px;
+  border-width: 2px;
+}

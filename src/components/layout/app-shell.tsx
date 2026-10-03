@@ -18,6 +18,7 @@ import {
   MapPin,
   Leaf,
   CircleHelp,
+  Bot,
 } from "lucide-react";
 import { useLocaly } from "@/components/providers/localy-provider";
 import { Button } from "@/components/ui/primitives";
@@ -30,6 +31,7 @@ const nav = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
   { href: "/opportunities", label: "Opportunities", icon: Radar },
   { href: "/community", label: "Community Feed", icon: Radio },
+  { href: "/agent", label: "Agent", icon: Bot },
   { href: "/conversations", label: "Conversations", icon: MessagesSquare },
   { href: "/bookings", label: "Bookings", icon: CalendarDays },
   { href: "/business", label: "Business", icon: Store },

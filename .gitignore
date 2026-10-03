@@ -11,3 +11,6 @@ next-env.d.ts
 .DS_Store
 Thumbs.db
 *.log
+
+# OpenClaw agent store (leads, tasks, logs)
+/data/

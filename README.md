@@ -214,3 +214,23 @@ Revenue is the total of non-cancelled Localy-sourced confirmed/completed booking
 GitHub: https://github.com/Aopandey/Localy
 
 The user's existing repository is the canonical remote. The local project folder/package is `localy-ai`; no separate GitHub repository is required.
+
+## Live agent (OpenClaw + Aside)
+
+The **Agent** page sends real tasks to an OpenClaw agent that browses with the Aside browser:
+
+1. **Search the web** (Google) or **Watch a page** (a Reddit thread, Facebook group, any link).
+2. OpenClaw reads through Aside in read-only mode, keeps only real requests the business can serve, and drafts a reply from the business profile.
+3. Leads appear on the Agent page. **Approve & Send** posts exactly the approved text, once, as a public reply on the person's post. A direct message is used only when their post asked for DMs.
+
+Setup on the machine running the site:
+
+```sh
+# OpenClaw with Aside registered as an MCP server
+openclaw mcp add aside --command "$(which aside)" --arg mcp
+# Install the skill into the OpenClaw workspace
+rsync -a openclaw/skills/localy-outreach/ ~/.openclaw/workspace/skills/localy-outreach/
+pnpm dev   # run from this folder; agent data is written to ./data (gitignored)
+```
+
+Optional `.env.local` settings: `LOCALY_AGENT_MODEL` (default `anthropic/claude-opus-5-5`), `OPENCLAW_BIN` (default `/opt/homebrew/bin/openclaw`), `LOCALY_STORE` (default `./data/agent-store.json`). Each task's log is in `data/logs/`. To watch Aside work, run `aside settings save-sessions true` and open the sessions in the Aside browser, or follow the run in `openclaw dashboard`.
