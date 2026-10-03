@@ -30,7 +30,7 @@ export function runTask(task: AgentTask) {
   mkdirSync(LOG_DIR, { recursive: true });
   const log = openSync(path.join(LOG_DIR, `${task.id}.log`), "a");
   const child = spawn(
-    OPENCLAW_BIN,
+    /*turbopackIgnore: true*/ OPENCLAW_BIN,
     [
       "agent",
       "--session-id",

@@ -33,7 +33,7 @@ async function withLock<T>(fn: () => Promise<T>): Promise<T> {
 
 export async function readStore(): Promise<AgentStore> {
   try {
-    return { ...EMPTY, ...JSON.parse(await readFile(STORE_PATH, "utf8")) };
+    return { ...EMPTY, ...JSON.parse(await readFile(/*turbopackIgnore: true*/ STORE_PATH, "utf8")) };
   } catch {
     return structuredClone(EMPTY);
   }
